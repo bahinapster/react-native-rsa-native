@@ -5567,7 +5567,7 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
 
-"react-native-rsa-native@../":
+"rn-rsa@../":
   "resolved" "file:.."
   "version" "2.0.5"
 

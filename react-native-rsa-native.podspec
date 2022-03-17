@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   # NPM package specification
   package = JSON.parse(File.read(File.join(File.dirname(__FILE__), "package.json")))
 
-  s.name         = "react-native-rsa-native"
+  s.name         = "rn-rsa"
   s.version      = package["version"]
   s.summary      = package["description"]
   s.homepage     = package["homepage"]

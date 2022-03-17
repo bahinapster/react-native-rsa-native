@@ -1,4 +1,4 @@
-declare module 'react-native-rsa-native' {
+declare module 'rn-rsa' {
 	interface PublicKey {
 		public: string;
 	}

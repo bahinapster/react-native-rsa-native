@@ -1,5 +1,5 @@
 rootProject.name = 'example'
-include ':react-native-rsa-native'
-project(':react-native-rsa-native').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-rsa-native/android')
+include ':rn-rsa'
+project(':rn-rsa').projectDir = new File(rootProject.projectDir, '../node_modules/rn-rsa/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
