@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 
-import {RSA, RSAKeychain} from 'rn-rsa';
+import {RSA, RSAKeychain} from 'rn-crypto-native';
 
 let secret = 'secret message';
 let keyTag = 'com.domain.mykey';

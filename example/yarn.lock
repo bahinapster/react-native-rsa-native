@@ -5801,7 +5801,7 @@ rimraf@~2.2.6:
   resolved "https://registry.npmjs.org/rimraf/-/rimraf-2.2.8.tgz"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
 
-rn-rsa@../:
+rn-crypto-native@../:
   version "2.0.6"
 
 rsvp@^4.8.4:
