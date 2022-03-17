@@ -1,4 +1,4 @@
-declare module 'rn-rsa' {
+declare module 'rn-crypto-native' {
 	interface PublicKey {
 		public: string;
 	}

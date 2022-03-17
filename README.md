@@ -1,4 +1,4 @@
-# rn-rsa
+# rn-crypto-native
 
 A native implementation of RSA key generation and encryption/decryption, sign/verify.
 Keychain implementation
@@ -21,11 +21,11 @@ Keychain support
 
 ## Getting started
 
-`$ yarn add rn-rsa`
+`$ yarn add rn-crypto-native`
 
 or:
 
-`$ npm install rn-rsa --save`
+`$ npm install rn-crypto-native --save`
 
 ## Older React-Native versions
 If you are using an older version of React Native and are having issues try using v1.1.14
@@ -43,7 +43,7 @@ Encrypt a message and subsequently decrypt it,
 using the RSA class in a promise chain structure.
 
 ```js
-import { RSA } from 'rn-rsa';
+import { RSA } from 'rn-crypto-native';
 
 let message = "my secret message";
 
@@ -68,7 +68,7 @@ Sign a message and subsequently verify it,
 using the RSAKeychain class in an async/await structure.
 
 ```typescript
-import { RSAKeychain } from 'rn-rsa';
+import { RSAKeychain } from 'rn-crypto-native';
 
 async main() {
     let keyTag = 'com.domain.mykey';
@@ -229,8 +229,3 @@ Property | Description
 
 * Originally based on https://github.com/SamSaffron/react-native-key-pair
 * iOS implementation [reference](https://developer.apple.com/library/content/documentation/Security/Conceptual/CertKeyTrustProgGuide/KeyRead.html#//apple_ref/doc/uid/TP40001358-CH222-SW1)
-
-
-## Donate
-
-ETH: 0xDc2F8D78098749EB3ECdF79Fe32Efda86fEEFc3c

@@ -1,7 +1,12 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-
+import React from 'react';
 import {RSA, RSAKeychain} from 'rn-crypto-native';
+
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+} from 'react-native';
+
 
 let secret = 'secret message';
 let keyTag = 'com.domain.mykey';
@@ -191,14 +196,21 @@ const runDemos = async () => {
 
 runDemos().then();
 
-class App extends Component {
-  render() {
-    return (
-      <View>
-        <Text>Demo</Text>
-      </View>
-    );
+
+const App = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text>Demo app</Text>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
-}
+});
 
 export default App;
