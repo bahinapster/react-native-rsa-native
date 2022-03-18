@@ -1,25 +1,20 @@
 import React from 'react';
 import {RSA, RSAKeychain} from 'rn-crypto-native';
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-} from 'react-native';
-
+import {SafeAreaView, StyleSheet, Text} from 'react-native';
 
 let secret = 'secret message';
 let keyTag = 'com.domain.mykey';
 
 const generateKeys4096Demo = async () => {
-  console.log('generateKeys4096Demo');
+  /* console.log('generateKeys4096Demo');
   const keys = await RSA.generateKeys(4096);
   console.log('4096 private:', keys.private); // the private key
   console.log('4096 public:', keys.public); // the public key
   const encodedMessage = await RSA.encrypt('4096', keys.public);
   console.log('4096 encoded message:', encodedMessage);
   const message = await RSA.decrypt(encodedMessage, keys.private);
-  console.log('4096 decoded message:', message);
+  console.log('4096 decoded message:', message); */
 };
 
 const generateDemo = async () => {
@@ -175,8 +170,7 @@ const keychainDemo = async () => {
   const publicKey = await RSAKeychain.getPublicKey(keyTag);
   console.log('getPublicKey', publicKey);
 
-  const subject =
-    'Text, C=US, surName=test, GIVENNAME=test, organizationIdentifier=1.0.2.15';
+  const subject = 'Text';
   const csr = await RSAKeychain.generateCSR(keyTag, subject, 'SHA256withRSA');
   console.log('csr', csr);
 
@@ -196,7 +190,6 @@ const runDemos = async () => {
 
 runDemos().then();
 
-
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
@@ -209,8 +202,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 export default App;
