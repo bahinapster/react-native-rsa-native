@@ -6,21 +6,18 @@ import Security
 
 // swiftlint:disable:next type_body_length
 public class CertificateSigningRequest : NSObject {
-    
-    
     private let sequenceTag: UInt8 = 0x30
     private let setTag: UInt8 = 0x31
     private var keyAlgorithm: KeyAlgorithm!
     private var attributes: NSDictionary
     private var subjectDER: Data?
-    
+
     private var attributesMap = [
         "commonName": [0x06, 0x03, 0x55, 0x04, 0x03],
         "organizationName": [0x06, 0x03, 0x55, 0x04, 0x0A],
         "organizationUnitName": [0x06, 0x03, 0x55, 0x04, 0x0B],
         "countryName": [0x06, 0x03, 0x55, 0x04, 0x06],
         "stateOrProvinceName": [0x06, 0x03, 0x55, 0x04, 0x08],
-        
         "localityName": [0x06, 0x03, 0x55, 0x04, 0x07],
         "emailAddress": [0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x09, 0x01],
         "organizationIdentifier": [0x06, 0x03, 0x55, 0x04, 0x61],
@@ -34,7 +31,6 @@ public class CertificateSigningRequest : NSObject {
         attributes: NSDictionary,
         keyAlgorithm: KeyAlgorithm
     ) {
-       
         self.keyAlgorithm = keyAlgorithm
         self.attributes = attributes
     }

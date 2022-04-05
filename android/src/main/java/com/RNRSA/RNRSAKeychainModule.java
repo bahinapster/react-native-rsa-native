@@ -2,15 +2,15 @@
 package com.RNRSA;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableNativeMap;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void generateCSR(final String keyTag, final String commonName, final String withAlgorithm, final Promise promise) {
+  public void generateCSR(final String keyTag, final ReadableMap attributes, final String withAlgorithm, final Promise promise) {
     final ReactApplicationContext reactContext = this.reactContext;
 
     AsyncTask.execute(new Runnable() {
@@ -81,7 +81,7 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
 
         try {
           RSA rsa = new RSA(keyTag);
-          rsa.generateCSR(commonName, withAlgorithm, reactContext);
+          rsa.generateCSR(toHashMap(attributes), withAlgorithm, reactContext);
           keys.putString("csr", rsa.getCSR());
           promise.resolve(keys);
         } catch (NoSuchAlgorithmException e) {
@@ -94,7 +94,7 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void generateCSRWithEC(final String cn,final String keyTag, final int keySize, final Promise promise) {
+  public void generateCSRWithEC(final ReadableMap attributes, final String keyTag, final int keySize, final Promise promise) {
     final ReactApplicationContext reactContext = this.reactContext;
 
     AsyncTask.execute(new Runnable() {
@@ -104,7 +104,7 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
 
         try {
           RSA rsa = new RSA();
-          rsa.generateCSRWithEC(cn,keyTag, keySize, reactContext);
+          rsa.generateCSRWithEC(toHashMap(attributes), keyTag, keySize, reactContext);
           keys.putString("csr", rsa.getCSR());
           promise.resolve(keys);
         } catch (NoSuchAlgorithmException e) {
@@ -114,6 +114,23 @@ public class RNRSAKeychainModule extends ReactContextBaseJavaModule {
         }
       }
     });
+  }
+
+  private static HashMap<String, String> toHashMap(ReadableMap map) {
+    HashMap<String, String> hashMap = new HashMap<>();
+    ReadableMapKeySetIterator iterator = map.keySetIterator();
+    
+    while (iterator.hasNextKey()) {
+      String key = iterator.nextKey();
+      switch (map.getType(key)) {
+        case String:
+          hashMap.put(key, map.getString(key));
+          break;
+        default:
+          throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
+      }
+    }
+    return hashMap;
   }
 
   @ReactMethod

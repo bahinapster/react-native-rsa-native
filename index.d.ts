@@ -11,14 +11,13 @@ declare module 'rn-crypto-native' {
 		private: string;
 	}
 
-	type TypeCrypto  = 
+	type TypeCrypto  =
 		'SHA256withRSA'|
 		'SHA512withRSA'|
 		'SHA1withRSA'|
 		'SHA256withECDSA'|
 		'SHA512withECDSA'|
 		'SHA1withECDSA'
-	
 
 	namespace RSA {
 		export function generate(): Promise<PublicKey>;
@@ -46,9 +45,9 @@ declare module 'rn-crypto-native' {
 	namespace RSAKeychain {
 		export function generate(keyTag: string): Promise<PublicKey>;
 		export function generateEC(keyTag: string): Promise<PublicKey>;
-		export function generateCSR(keyTag: string, CN: string, signature?: TypeCrypto): Promise<CSRKey>;
+		export function generateCSR(keyTag: string, attributes: Map<string, string>, signature?: TypeCrypto): Promise<CSRKey>;
 		export function generateKeys(keyTag: string, keySize: number): Promise<PublicKey>;
-		export function generateCSRWithEC(cn: String,keyTag: string, keySize: number): Promise<PublicKey & CSRKey>;
+		export function generateCSRWithEC(attributes: Map<string, string>,keyTag: string, keySize: number): Promise<PublicKey & CSRKey>;
 		export function deletePrivateKey(keyTag: string): Promise<boolean>;
 		export function encrypt(data: string, keyTag: string): Promise<string>;
 		export function decrypt(data: string, keyTag: string): Promise<string>;

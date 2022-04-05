@@ -1,10 +1,13 @@
 package com.RNRSA;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
 import org.bouncycastle.operator.ContentSigner;
@@ -26,7 +29,21 @@ import java.util.Map;
 
 public class CsrHelper {
   private static final String DEFAULT_SIGNATURE_ALGORITHM = "SHA256withECDSA";
-  private static final String CN_PATTERN = "CN=%s";
+  private static final Map<String, ASN1ObjectIdentifier> attributesMap = new HashMap<String, ASN1ObjectIdentifier>() {
+    {
+      put("commonName", BCStyle.CN);
+      put("organizationName", BCStyle.O);
+      put("organizationUnitName", BCStyle.OU);
+      put("countryName", BCStyle.C);
+      put("stateOrProvinceName", BCStyle.ST);
+      put("localityName", BCStyle.L);
+      put("emailAddress", BCStyle.EmailAddress);
+      put("organizationIdentifier", BCStyle.ORGANIZATION_IDENTIFIER);
+      put("title", BCStyle.T);
+      put("description", BCStyle.DESCRIPTION);
+      put("givenName", BCStyle.GIVENNAME);
+      put("surName", BCStyle.SURNAME);
+    }};
 
   private static class JCESigner implements ContentSigner {
     private static Map<String, AlgorithmIdentifier> ALGOS = new HashMap<String, AlgorithmIdentifier>();
@@ -105,17 +122,24 @@ public class CsrHelper {
   }
 
   //Create the certificate signing request (CSR) from private and public keys
+  @TargetApi(Build.VERSION_CODES.N)
   public static PKCS10CertificationRequest generateCSR(
     PublicKey publicKey,
-    String cn,
+    HashMap<String, String> attributes,
     String keyTag,
     String withAlgorithm
   )
     throws IOException, OperatorCreationException {
-    String principal = String.format(CN_PATTERN, cn);
     ContentSigner signer = new JCESigner(withAlgorithm, keyTag);
+    X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
+    attributes.forEach((k,v) -> {
+      if (attributesMap.containsKey(k)) {
+        builder.addRDN(attributesMap.get(k), v);
+      }
+    });
+
     PKCS10CertificationRequestBuilder csrBuilder = new JcaPKCS10CertificationRequestBuilder(
-      new X500Name(principal),
+      builder.build(),
       publicKey
     );
 
@@ -130,13 +154,13 @@ public class CsrHelper {
 
   public static PKCS10CertificationRequest generateCSRWithEC(
     PublicKey publicKey,
-    String commonName,
+    HashMap<String, String> attributes,
     String keyTag
   )
     throws IOException, OperatorCreationException {
     return generateCSR(
       publicKey,
-      commonName,
+      attributes,
       keyTag,
       DEFAULT_SIGNATURE_ALGORITHM
     );
