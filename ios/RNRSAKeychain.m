@@ -11,9 +11,9 @@ RCT_EXTERN_METHOD(generate:(NSString *)keyTag resolver:(RCTPromiseResolveBlock)r
 
 RCT_EXTERN_METHOD(generateKeys:(NSString *)keyTag keySize:(int)keySize resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(generateCSR:(NSString *)keyTag CN:(NSString *)CN withAlgorithm:(NSString *)withAlgorithm resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(generateCSR:(NSString *)keyTag attributes:(NSDictionary *)attributes withAlgorithm:(NSString *)withAlgorithm resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(generateCSRWithEC:(NSString *)CN keyTag:(NSString *)keyTag keySize:(int)keySize resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(generateCSRWithEC:(NSDictionary *)attributes keyTag:(NSString *)keyTag keySize:(int)keySize resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(generateEC:(NSString *)keyTag resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 

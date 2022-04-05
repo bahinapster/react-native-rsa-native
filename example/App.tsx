@@ -160,9 +160,9 @@ const keychainDemo = async () => {
   console.log(secret);
 
   const encodedMessage = await RSAKeychain.encrypt(secret, keyTag);
-  console.log(encodedMessage);
+  console.log('encrypted msg: ', encodedMessage);
   const message = await RSAKeychain.decrypt(encodedMessage, keyTag);
-  console.log(message);
+  console.log('decrypted msg: ', message);
   const signature = await RSAKeychain.sign(secret, keyTag);
   console.log('signature', signature);
   const valid = await RSAKeychain.verify(signature, secret, keyTag);
@@ -170,7 +170,10 @@ const keychainDemo = async () => {
   const publicKey = await RSAKeychain.getPublicKey(keyTag);
   console.log('getPublicKey', publicKey);
 
-  const subject = 'Text';
+  const subject = {
+    commonName: 'ibrahim',
+    emailAddress: 'test@mail.com',
+  };
   const csr = await RSAKeychain.generateCSR(keyTag, subject, 'SHA256withRSA');
   console.log('csr', csr);
 
@@ -179,12 +182,12 @@ const keychainDemo = async () => {
 };
 
 const runDemos = async () => {
-  await generateKeys4096Demo();
+  /* await generateKeys4096Demo();
   await generateDemo();
   await signDemo();
   await signAlgoDemo();
   await iosDemo();
-  await androidDemo();
+  await androidDemo();*/
   await keychainDemo();
 };
 

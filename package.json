@@ -1,6 +1,6 @@
 {
-  "name": "rn-crypto-native",
-  "version": "2.0.6",
+  "name": "rn-crypto-module",
+  "version": "2.0.7",
   "description": "A native implementation of RSA key generation and encryption/decryption.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -9,18 +9,20 @@
   },
   "keywords": [
     "react-native",
-    "rsa"
+    "rsa",
+    "ec",
+    "native"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/bahinapster/rn-crypto-native"
+    "url": "https://github.com/bahinapster/rn-crypto-module"
   },
   "bugs": {
-    "url": "https://github.com/bahinapster/rn-crypto-native/issues"
+    "url": "https://github.com/bahinapster/rn-crypto-module/issues"
   },
   "author": {
     "name": "Amitay Molko"
   },
   "license": "MIT",
-  "homepage": "https://github.com/bahinapster/rn-crypto-native#readme"
+  "homepage": "https://github.com/bahinapster/rn-crypto-module#readme"
 }
