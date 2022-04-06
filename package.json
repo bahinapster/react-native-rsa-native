@@ -15,10 +15,7 @@
     "csr",
     "native"
   ],
-  "devDependencies": {
-    "react": "^17.0.2",
-    "react-native": "^0.67.1"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/bahinapster/rn-crypto-module"
