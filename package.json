@@ -1,18 +1,24 @@
 {
   "name": "rn-crypto-module",
-  "version": "2.0.8",
-  "description": "A native implementation of RSA key generation and encryption/decryption.",
+  "version": "2.0.9",
+  "description": "A native implementation of RSA & EC key generation and encryption/decryption.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "compile": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "react-native",
     "rsa",
     "ec",
+    "csr",
     "native"
   ],
+  "devDependencies": {
+    "react": "^17.0.2",
+    "react-native": "^0.67.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/bahinapster/rn-crypto-module"
