@@ -34,15 +34,15 @@ public class CsrHelper {
       put("commonName", BCStyle.CN);
       put("organizationName", BCStyle.O);
       put("organizationUnitName", BCStyle.OU);
-      put("countryName", BCStyle.C);
+      put("country", BCStyle.C);
       put("stateOrProvinceName", BCStyle.ST);
-      put("localityName", BCStyle.L);
+      put("locality", BCStyle.L);
       put("emailAddress", BCStyle.EmailAddress);
       put("organizationIdentifier", BCStyle.ORGANIZATION_IDENTIFIER);
       put("title", BCStyle.T);
       put("description", BCStyle.DESCRIPTION);
       put("givenName", BCStyle.GIVENNAME);
-      put("surName", BCStyle.SURNAME);
+      put("surname", BCStyle.SURNAME);
     }};
 
   private static class JCESigner implements ContentSigner {
