@@ -34,9 +34,9 @@ public class CsrHelper {
       put("commonName", BCStyle.CN);
       put("organizationName", BCStyle.O);
       put("organizationUnitName", BCStyle.OU);
-      put("country", BCStyle.C);
+      put("countryName", BCStyle.C);
       put("stateOrProvinceName", BCStyle.ST);
-      put("locality", BCStyle.L);
+      put("localityName", BCStyle.L);
       put("emailAddress", BCStyle.EmailAddress);
       put("organizationIdentifier", BCStyle.ORGANIZATION_IDENTIFIER);
       put("title", BCStyle.T);
