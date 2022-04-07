@@ -287,6 +287,10 @@ Returns true if the key was removed successfully.
 
 Generate a csr
 
+Atrributes is an object with this supported keys:
+
+`commonName, organizationName, organizationUnitName, countryName, stateOrProvinceName, localityName, emailAddress, organizationIdentifier, title, description, givenName, surname`
+
 Returns an object `{csr: csrPem}`
 
 ### KeyPair Type
