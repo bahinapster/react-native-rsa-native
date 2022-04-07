@@ -1,5 +1,5 @@
 
-# rn-crypto-native
+# rn-crypto-module
 
   This repo is a fork from  **[react-native-rsa-native](https://github.com/amitaymolko/react-native-rsa-native)**
 
@@ -10,6 +10,8 @@ A native implementation of EC key generation and encryption/decryption, sign/ver
 Keychain implementation
 
 Implementation is in PKCS1
+
+Csr generation
 
 ## Support
 
@@ -31,15 +33,17 @@ Sign,
 
 Verify,
 
+Csr generation,
+
 Keychain support
 
 ## Getting started
 
-`$ yarn add rn-crypto-native`
+`$ yarn add rn-crypto-module`
 
 or:
 
-`$ npm install rn-crypto-native --save`
+`$ npm install rn-crypto-module --save`
 
 ## Older React-Native versions
 
@@ -63,34 +67,21 @@ using the RSA class in a promise chain structure.
 
 ```js
 
-import { RSA } from  'rn-crypto-native';
-
-  
+import { RSA } from  'rn-crypto-module';
 
 let  message = "my secret message";
 
-  
-
 RSA.generateKeys(4096) // set key size
-
 .then(keys  => {
-
-console.log('4096 private:', keys.private); // the private key
-
-console.log('4096 public:', keys.public); // the public key
-
-RSA.encrypt(message, keys.public)
-
+  console.log('4096 private:', keys.private); // the private key
+  console.log('4096 public:', keys.public); // the public key
+  RSA.encrypt(message, keys.public)
 .then(encodedMessage  => {
-
-console.log(`the encoded message is ${encodedMessage}`);
-
-RSA.decrypt(encodedMessage, keys.private)
+  console.log(`the encoded message is ${encodedMessage}`);
+  RSA.decrypt(encodedMessage, keys.private)
 
 .then(decryptedMessage  => {
-
-console.log(`The original message was ${decryptedMessage}`);
-
+  console.log(`The original message was ${decryptedMessage}`);
 });
 
 });
@@ -107,9 +98,8 @@ using the RSAKeychain class in an async/await structure.
 
 ```typescript
 
-import { RSAKeychain } from  'rn-crypto-native';
+import { RSAKeychain } from  'rn-crypto-module';
 
-  
 
 async  main() {
 
@@ -117,41 +107,27 @@ let  keyTag = 'com.domain.mykey';
 
 let  message = "message to be verified";
 
-  
 
 let  publicKey = await  generateKeyPair(keyTag);
 
 // Share the generated public key with third parties as desired.
 
-  
-
 let  messageSignature = await  RSAKeychain.sign(message, keyTag);
 
-  
-
 if (await  RSAKeychain.verify(messageSignature, message, keyTag)) {
-
 // The signature matches: trust this message.
-
 } else {
-
 // The signature does not match.
-
 }
-
-  
 
 await  RSAKeychain.deletePrivateKey(keyTag);
-
 }
-
-  
 
 async  generateKeyPair(keyTag : string) {
 
-let  keys = await  RSAKeychain.generate(keyTag);
+  let  keys = await  RSAKeychain.generate(keyTag);
 
-return  keys.public;
+  return  keys.public;
 
 }
 
@@ -283,7 +259,7 @@ the message, the returned signature, and the matching public key
 
 can verify it was signed under this key. The user can use **SHA256withRSA** or **SHA512withRSA** algorithm for signing.
 
-**SHA256withRSA** algorithm is not backward compatible on android and the user needs to generate new keypair for this to work. (available from ^1.1.0). The default is **SHA512withRSA** and if one wishes to use __SHA512withRSA__ for signing without new keypair, then use the above sign method.
+**SHA256withRSA** algorithm is not backward compatible on android and the user needs to generate new keypair for this to work. (available from ^1.1.0). The default is **SHA512withRSA** and if one wishes to use **SHA512withRSA** for signing without new keypair, then use the above sign method.
 
 #### verify
 
@@ -304,6 +280,14 @@ Verify whether or not a provided signature was produced by signing the given mes
 Delete the private key from the operating system's keychain.
 
 Returns true if the key was removed successfully.
+
+#### generateCSR
+
+`generateCSR(keyTag: string, attributes: object, signature?: TypeCrypto): Promise<CSRKey>`
+
+Generate a csr
+
+Returns an object `{csr: csrPem}`
 
 ### KeyPair Type
 
