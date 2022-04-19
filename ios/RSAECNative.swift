@@ -1,5 +1,3 @@
-
-
 //
 //  RSANative.swift
 //  BVLinearGradient
@@ -11,7 +9,6 @@ typealias SecKeyPerformBlock = (SecKey) -> ()
 
 
 class RSAECNative: NSObject {
-    
     var publicKey: SecKey?
     var privateKey: SecKey?
     var keyTag: String?
@@ -68,12 +65,7 @@ class RSAECNative: NSObject {
             kSecPrivateKeyAttrs as String: privateKeyParameters as AnyObject,
         ]
         parameters[String(kSecAttrKeySizeInBits)] = keySize as AnyObject
-        if #available(iOS 10, *) {
-            parameters[String(kSecAttrKeyType)] = keyAlgorithm.secKeyAttrType
-        } else {
-            // Fallback on earlier versions
-            parameters[String(kSecAttrKeyType)] = keyAlgorithm.secKeyAttrTypeiOS9
-        }
+        parameters[String(kSecAttrKeyType)] = keyAlgorithm.secKeyAttrType
         
         #if !arch(i386) && !arch(x86_64)
         
@@ -84,29 +76,15 @@ class RSAECNative: NSObject {
         
         #endif
         
-        // TODO: Fix for when not set keytag and dont use keychain
-        if #available(iOS 10.0, *) {
-            
-            var error: Unmanaged<CFError>?
-            self.privateKey = SecKeyCreateRandomKey(parameters as CFDictionary, &error)
-            
-            if self.privateKey == nil {
-                print("Error occured: keys weren't created")
-                return nil
-            }
-            
-            self.publicKey = SecKeyCopyPublicKey(self.privateKey!)
-            
-        } else {
-            // Fallback on earlier versions
-            
-            let result = SecKeyGeneratePair(parameters as CFDictionary, &publicKey, &privateKey)
-            
-            if result != errSecSuccess{
-                print("Error occured: \(result)")
-                return nil
-            }
+        var error: Unmanaged<CFError>?
+        self.privateKey = SecKeyCreateRandomKey(parameters as CFDictionary, &error)
+        
+        if self.privateKey == nil {
+            print("Error occured: keys weren't created")
+            return nil
         }
+        
+        self.publicKey = SecKeyCopyPublicKey(self.privateKey!)
         
         guard self.publicKey != nil else {
             print( "Error  in setUp(). PublicKey shouldn't be nil")
@@ -157,17 +135,11 @@ class RSAECNative: NSObject {
             String(kSecReturnData): kCFBooleanTrue
         ]
         
-        if #available(iOS 10, *) {
-            query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrType
-        } else {
-            // Fallback on earlier versions
-            query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrTypeiOS9
-        }
-        
+        query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrType
+
         var tempPublicKeyBits:AnyObject?
-        
         let result = SecItemCopyMatching(query as CFDictionary, &tempPublicKeyBits)
-        
+
         switch result {
         case errSecSuccess:
             guard let keyBits = tempPublicKeyBits as? Data else {
@@ -175,7 +147,6 @@ class RSAECNative: NSObject {
                 return nil
             }
             return keyBits
-            
         default:
             print("error in: convert to publicKeyBits")
             return nil
@@ -201,7 +172,6 @@ class RSAECNative: NSObject {
         }
     }
     
-    
     public func deletePrivateKey(){
         var query: [String: AnyObject] = [
             String(kSecClass)             : kSecClassKey,
@@ -209,12 +179,7 @@ class RSAECNative: NSObject {
             String(kSecReturnRef)         : true as AnyObject
         ]
         
-        if #available(iOS 10, *) {
-            query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrType
-        } else {
-            // Fallback on earlier versions
-            query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrTypeiOS9
-        }
+        query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrType
         let result = SecItemDelete(query as CFDictionary)
         
         if result != errSecSuccess{
@@ -236,7 +201,6 @@ class RSAECNative: NSObject {
     }
     
     public func encodedPublicKeyDER() -> String? {
-        
         if ((self.keyTag) != nil) {
             var encodedPublicKey: String?
             self.performWithPublicKeyTag(tag: self.publicKeyTag!) { (publicKey) in
@@ -249,7 +213,6 @@ class RSAECNative: NSObject {
     }
     
     public func encodedPublicKey() -> String? {
-        
         if ((self.keyTag) != nil) {
             var encodedPublicKey: String?
             self.performWithPublicKeyTag(tag: self.publicKeyTag!) { (publicKey) in
@@ -285,8 +248,7 @@ class RSAECNative: NSObject {
         return self.externalRepresentationForPrivateKeyDER(key: self.privateKey!)
     }
     
-    
-    public func setPublicKey(publicKey: String) -> Bool? {
+    public func setPublicKey(publicKey: String) -> Bool {
         guard let publicKeyStr = RSAECFormatter.stripHeaders(pemString: publicKey) else { return false }
         let query: [String: AnyObject] = [
             String(kSecAttrKeyType): kSecAttrKeyTypeRSA,
@@ -296,17 +258,13 @@ class RSAECNative: NSObject {
         var error: Unmanaged<CFError>?
         guard let data = Data(base64Encoded: publicKeyStr, options: .ignoreUnknownCharacters) else { return false }
         print(data, "datadatadata")
-        if #available(iOS 10.0, *) {
-            guard let key = SecKeyCreateWithData(data as CFData, query as CFDictionary, &error) else { return false }
-            self.publicKey = key
-            return true
-        } else {
-            // Fallback on earlier versions
-        }
-        return false
+
+        guard let key = SecKeyCreateWithData(data as CFData, query as CFDictionary, &error) else { return false }
+        self.publicKey = key
+        return true
     }
     
-    public func setPrivateKey(privateKey: String) -> Bool? {
+    public func setPrivateKey(privateKey: String) -> Bool {
         guard let privateKeyStr = RSAECFormatter.stripHeaders(pemString: privateKey) else { return nil }
         let query: [String: AnyObject] = [
             String(kSecAttrKeyType): kSecAttrKeyTypeRSA,
@@ -314,14 +272,10 @@ class RSAECNative: NSObject {
         ]
         var error: Unmanaged<CFError>?
         guard let data = Data(base64Encoded: privateKeyStr, options: .ignoreUnknownCharacters) else { return nil }
-        if #available(iOS 10.0, *) {
-            guard let key = SecKeyCreateWithData(data as CFData, query as CFDictionary, &error) else { return nil }
-            self.privateKey = key
-            return true
-        } else {
-            // Fallback on earlier versions
-        }
-        return nil
+        guard let key = SecKeyCreateWithData(data as CFData, query as CFDictionary, &error) else { return nil }
+        self.privateKey = key
+
+        return true
     }
     
     public func encrypt64(message: String) -> String? {
@@ -329,8 +283,7 @@ class RSAECNative: NSObject {
         let encrypted = self._encrypt(data: data)
         return encrypted?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
     }
-    
-    
+
     public func encrypt(message: String) -> String? {
         guard let data =  message.data(using: .utf8) else { return nil }
         let encrypted = self._encrypt(data: data)
@@ -342,17 +295,12 @@ class RSAECNative: NSObject {
         
         // Closures
         let encryptor:SecKeyPerformBlock = { publicKey in
-            if #available(iOS 10.0, *) {
-                let canEncrypt = SecKeyIsAlgorithmSupported(publicKey, .encrypt, .rsaEncryptionPKCS1)
-                if(canEncrypt){
-                    var error: Unmanaged<CFError>?
-                    cipherText = SecKeyCreateEncryptedData(publicKey, .rsaEncryptionPKCS1, data as CFData, &error) as Data?
-                }
-            } else {
-                // Fallback on earlier versions
-            };
+            let canEncrypt = SecKeyIsAlgorithmSupported(publicKey, .encrypt, .rsaEncryptionPKCS1)
+            if(canEncrypt){
+                var error: Unmanaged<CFError>?
+                cipherText = SecKeyCreateEncryptedData(publicKey, .rsaEncryptionPKCS1, data as CFData, &error) as Data?
+            }
         }
-        
         
         if ((self.keyTag) != nil) {
             self.performWithPublicKeyTag(tag: self.publicKeyTag!, block: encryptor)
@@ -368,7 +316,6 @@ class RSAECNative: NSObject {
         return decrypted?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
     }
     
-    
     public func decrypt(message: String) -> String? {
         guard let data =  Data(base64Encoded: message, options: .ignoreUnknownCharacters) else { return nil }
         let decrypted = self._decrypt(data: data)
@@ -381,16 +328,11 @@ class RSAECNative: NSObject {
     private func _decrypt(data: Data) -> Data? {
         var clearText: Data?
         let decryptor: SecKeyPerformBlock = {privateKey in
-            if #available(iOS 10.0, *) {
-                let canEncrypt = SecKeyIsAlgorithmSupported(privateKey, .decrypt, .rsaEncryptionPKCS1)
-                if(canEncrypt){
-                    var error: Unmanaged<CFError>?
-                    clearText = SecKeyCreateDecryptedData(privateKey, .rsaEncryptionPKCS1, data as CFData, &error) as Data?
-                }
-                
-            } else {
-                // Fallback on earlier versions
-            };
+            let canEncrypt = SecKeyIsAlgorithmSupported(privateKey, .decrypt, .rsaEncryptionPKCS1)
+            if(canEncrypt){
+                var error: Unmanaged<CFError>?
+                clearText = SecKeyCreateDecryptedData(privateKey, .rsaEncryptionPKCS1, data as CFData, &error) as Data?
+            }
         }
         
         if ((self.keyTag) != nil) {
@@ -417,71 +359,17 @@ class RSAECNative: NSObject {
         self.setAlgorithm(algorithm: withAlgorithm)
         var encodedSignature: String?
         let signer: SecKeyPerformBlock = { privateKey in
-            if #available(iOS 11, *) {
-                // Build signature - step 1: SHA1 hash
-                // Build signature - step 2: Sign hash
-                //            var signature: Data? = nil
-                var error: Unmanaged<CFError>?
-                
-                let signature = SecKeyCreateSignature(privateKey, self.keyAlgorithm.signatureAlgorithm, messageBytes as CFData, &error) as Data?
-                
-                if error != nil{
-                    print("Error in creating signature: \(error!.takeRetainedValue())")
-                }
-                
-                encodedSignature = signature!.base64EncodedString(options: withEncodeOption)
-                
-            } else {
-                // TODO: fix and test
-                // Fallback on earlier versions
-                
-                // Build signature - step 1: SHA1 hash
-                var signature = [UInt8](repeating: 0, count: self.keyAlgorithm.availableKeySizes.last!)
-                var signatureLen:Int = signature.count
-                var messageDataBytes = [UInt8](repeating: 0, count: messageBytes.count)
-                messageBytes.copyBytes(to: &messageDataBytes, count: messageBytes.count)
-                var digest = [UInt8](repeating: 0, count: self.keyAlgorithm.digestLength)
-                let padding = self.keyAlgorithm.padding
-                
-                switch self.keyAlgorithm {
-                    
-                case .rsa(signatureType: .sha1), .ec(signatureType: .sha1):
-                    
-                    var SHA1 = CC_SHA1_CTX()
-                    CC_SHA1_Init(&SHA1)
-                    CC_SHA1_Update(&SHA1, messageDataBytes, CC_LONG(messageBytes.count))
-                    
-                    CC_SHA1_Final(&digest, &SHA1)
-                    
-                case .rsa(signatureType: .sha256), .ec(signatureType: .sha256):
-                    
-                    var SHA256 = CC_SHA256_CTX()
-                    CC_SHA256_Init(&SHA256)
-                    CC_SHA256_Update(&SHA256, messageDataBytes, CC_LONG(messageBytes.count))
-                    CC_SHA256_Final(&digest, &SHA256)
-                    
-                case .rsa(signatureType: .sha512), .ec(signatureType: .sha512):
-                    
-                    var SHA512 = CC_SHA512_CTX()
-                    CC_SHA512_Init(&SHA512)
-                    CC_SHA512_Update(&SHA512, messageDataBytes, CC_LONG(messageBytes.count))
-                    CC_SHA512_Final(&digest, &SHA512)
-                    
-                }
-                
-                // Build signature - step 2: Sign hash
-                let result = SecKeyRawSign(privateKey, padding, digest, digest.count, &signature, &signatureLen)
-                
-                if result != errSecSuccess{
-                    print("Error signing: \(result)")
-                    return
-                }
-                var signData = Data()
-                let zero:UInt8 = 0
-                signData.append(zero)
-                signData.append(signature, count: signatureLen)
-                encodedSignature = signData.base64EncodedString(options: withEncodeOption)
+            // Build signature - step 1: SHA1 hash
+            // Build signature - step 2: Sign hash
+            //            var signature: Data? = nil
+            var error: Unmanaged<CFError>?
+            let signature = SecKeyCreateSignature(privateKey, self.keyAlgorithm.signatureAlgorithm, messageBytes as CFData, &error) as Data?
+            
+            if error != nil{
+                print("Error in creating signature: \(error!.takeRetainedValue())")
             }
+            
+            encodedSignature = signature!.base64EncodedString(options: withEncodeOption)
         }
         
         if ((self.keyTag) != nil) {
@@ -510,14 +398,9 @@ class RSAECNative: NSObject {
         self.setAlgorithm(algorithm: withAlgorithm)
         // Closures
         let verifier: SecKeyPerformBlock = { publicKey in
-            if #available(iOS 10.0, *) {
-                var error: Unmanaged<CFError>?
-                result = SecKeyVerifySignature(publicKey, self.keyAlgorithm.signatureAlgorithm, withMessage as CFData, signatureBytes as CFData, &error)
-            } else {
-                // Fallback on earlier versions
-            }
+            var error: Unmanaged<CFError>?
+            result = SecKeyVerifySignature(publicKey, self.keyAlgorithm.signatureAlgorithm, withMessage as CFData, signatureBytes as CFData, &error)
         }
-        
         
         if ((self.keyTag) != nil) {
             self.performWithPublicKeyTag(tag: self.publicKeyTag!, block: verifier)
@@ -534,12 +417,7 @@ class RSAECNative: NSObject {
             String(kSecReturnRef)         : true as AnyObject
         ]
         
-        if #available(iOS 10, *) {
-            query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrType
-        } else {
-            // Fallback on earlier versions
-            query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrTypeiOS9
-        }
+        query[String(kSecAttrKeyType)] = self.keyAlgorithm.secKeyAttrType
         
         var result : AnyObject?
         
@@ -553,16 +431,10 @@ class RSAECNative: NSObject {
     
     private func performWithPublicKeyTag(tag: String, block: SecKeyPerformBlock){
         self.performWithPrivateKeyTag(keyTag: self.privateKeyTag!) { (privateKey) in
-            if #available(iOS 10.0, *) {
-                let publicKey = SecKeyCopyPublicKey(privateKey)
-                block(publicKey!)
-            } else {
-                // Fallback on earlier versions
-            }
+            let publicKey = SecKeyCopyPublicKey(privateKey)
+            block(publicKey!)
         }
-        
     }
-    
     
     private func externalRepresentationForPublicKeyRSA(key: SecKey) -> String? {
         guard let data = self.dataForKey(key: key) else { return nil }
@@ -599,19 +471,15 @@ class RSAECNative: NSObject {
     private func dataForKey(key: SecKey) -> Data? {
         var error: Unmanaged<CFError>?
         var keyData: Data?
-        if #available(iOS 10.0, *) {
-            keyData = SecKeyCopyExternalRepresentation(key, &error) as Data?
-        } else {
-            // Fallback on earlier versions
-        }
-        
+
+        keyData = SecKeyCopyExternalRepresentation(key, &error) as Data?
+
         if (keyData == nil) {
             print("error in dataForKey")
             return nil
         }
-        
+
         return keyData;
     }
-    
 }
 

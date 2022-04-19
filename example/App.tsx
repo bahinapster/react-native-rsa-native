@@ -1,5 +1,5 @@
 import React from 'react';
-import {RSA, RSAKeychain} from 'rn-crypto-native';
+import {RSA, RSAKeychain} from 'rn-crypto-module';
 
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 
