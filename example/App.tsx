@@ -173,6 +173,8 @@ const keychainDemo = async () => {
   const subject = {
     commonName: 'ibrahim',
     emailAddress: 'test@mail.com',
+    organizationName: 'Organization...',
+    countryName: 'MyCountry'
   };
   const csr = await RSAKeychain.generateCSR(keyTag, subject, 'SHA256withRSA');
   console.log('csr', csr);

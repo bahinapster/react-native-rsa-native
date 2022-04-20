@@ -248,18 +248,18 @@ class RSAECNative: NSObject {
         return self.externalRepresentationForPrivateKeyDER(key: self.privateKey!)
     }
     
-    public func setPublicKey(publicKey: String) -> Bool {
-        guard let publicKeyStr = RSAECFormatter.stripHeaders(pemString: publicKey) else { return false }
+    public func setPublicKey(publicKey: String) -> Bool? {
+        guard let publicKeyStr = RSAECFormatter.stripHeaders(pemString: publicKey) else { return nil }
         let query: [String: AnyObject] = [
             String(kSecAttrKeyType): kSecAttrKeyTypeRSA,
             String(kSecAttrKeyClass): kSecAttrKeyClassPublic,
         ]
         print(publicKeyStr, "publicKeyStrpublicKeyStr")
         var error: Unmanaged<CFError>?
-        guard let data = Data(base64Encoded: publicKeyStr, options: .ignoreUnknownCharacters) else { return false }
+        guard let data = Data(base64Encoded: publicKeyStr, options: .ignoreUnknownCharacters) else { return nil }
         print(data, "datadatadata")
 
-        guard let key = SecKeyCreateWithData(data as CFData, query as CFDictionary, &error) else { return false }
+        guard let key = SecKeyCreateWithData(data as CFData, query as CFDictionary, &error) else { return nil }
         self.publicKey = key
         return true
     }
