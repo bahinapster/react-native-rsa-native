@@ -264,7 +264,7 @@ class RSAECNative: NSObject {
         return true
     }
     
-    public func setPrivateKey(privateKey: String) -> Bool {
+    public func setPrivateKey(privateKey: String) -> Bool? {
         guard let privateKeyStr = RSAECFormatter.stripHeaders(pemString: privateKey) else { return nil }
         let query: [String: AnyObject] = [
             String(kSecAttrKeyType): kSecAttrKeyTypeRSA,
