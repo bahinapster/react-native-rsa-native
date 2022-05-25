@@ -156,8 +156,7 @@ class RNRSAKeychain: NSObject {
         if(pub == nil){
             reject("not exist public key", "error", nil)
         }else {
-            let keys = ["public": pub]
-            resolve(keys)
+            resolve(pub)
         }
     }
     
@@ -169,8 +168,7 @@ class RNRSAKeychain: NSObject {
         if(pub == nil){
             reject("not exist public key", "error", nil)
         }else {
-            let keys = ["public": pub]
-            resolve(keys)
+            resolve(pub)
         }
     }
     
@@ -182,8 +180,7 @@ class RNRSAKeychain: NSObject {
         if(pub == nil){
             reject("not exist public key", "error", nil)
         }else {
-            let keys = ["public": pub]
-            resolve(keys)
+            resolve(pub)
         }
     }
     
