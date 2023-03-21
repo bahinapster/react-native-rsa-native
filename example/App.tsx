@@ -6,32 +6,20 @@ import {SafeAreaView, StyleSheet, Text} from 'react-native';
 let secret = 'secret message';
 let keyTag = 'com.domain.mykey';
 
-const generateKeys4096Demo = async () => {
-  /* console.log('generateKeys4096Demo');
-  const keys = await RSA.generateKeys(4096);
-  console.log('4096 private:', keys.private); // the private key
-  console.log('4096 public:', keys.public); // the public key
-  const encodedMessage = await RSA.encrypt('4096', keys.public);
-  console.log('4096 encoded message:', encodedMessage);
-  const message = await RSA.decrypt(encodedMessage, keys.private);
-  console.log('4096 decoded message:', message); */
-};
-
 const generateDemo = async () => {
   console.log('generateDemo');
   const keys = await RSA.generate();
-  console.log('private:', keys.private); // the private key
   console.log('public:', keys.public); // the public key
   const encodedMessage = await RSA.encrypt('1234', keys.public);
   console.log('encoded message:', encodedMessage);
-  const message = await RSA.decrypt(encodedMessage, keys.private);
+  const message = await RSA.decrypt(encodedMessage, keyTag);
   console.log('decoded message:', message);
 };
 
 const signDemo = async () => {
   console.log('signDemo');
   const keys = await RSA.generate();
-  const signature = await RSA.sign(secret, keys.private);
+  const signature = await RSA.sign(secret, keyTag);
   console.log('signature', signature);
   const valid = await RSA.verify(signature, secret, keys.public);
   console.log('verified', valid);
@@ -48,15 +36,15 @@ const signAlgoDemo = async () => {
   const keys = await RSA.generate();
   const signature = await RSA.signWithAlgorithm(
     secret,
-    keys.private,
-    RSA.SHA256withRSA,
+    keyTag,
+    RSA.SHA256withRSA as any,
   );
   console.log('signature', signature);
   const valid = await RSA.verifyWithAlgorithm(
     signature,
     secret,
     keys.public,
-    RSA.SHA256withRSA,
+    RSA.SHA256withRSA as any,
   );
   console.log('verified', valid);
   try {
@@ -64,7 +52,7 @@ const signAlgoDemo = async () => {
       signature,
       'wrong message',
       keys.public,
-      RSA.SHA256withRSA,
+      RSA.SHA256withRSA as any,
     );
     console.log('NOTE!! Something went wrong, verify should have been failed');
   } catch (err) {
@@ -174,7 +162,7 @@ const keychainDemo = async () => {
     commonName: 'ibrahim',
     emailAddress: 'test@mail.com',
     organizationName: 'Organization...',
-    countryName: 'MyCountry'
+    countryName: 'MyCountry',
   };
   const csr = await RSAKeychain.generateCSR(keyTag, subject, 'SHA256withRSA');
   console.log('csr', csr);
@@ -184,12 +172,11 @@ const keychainDemo = async () => {
 };
 
 const runDemos = async () => {
-  /* await generateKeys4096Demo();
   await generateDemo();
   await signDemo();
   await signAlgoDemo();
   await iosDemo();
-  await androidDemo();*/
+  await androidDemo();
   await keychainDemo();
 };
 
