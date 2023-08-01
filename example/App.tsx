@@ -1,7 +1,7 @@
 import React from 'react';
 import {RSA, RSAKeychain} from 'rn-crypto-module';
 
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {Button, SafeAreaView, StyleSheet, Text} from 'react-native';
 
 let secret = 'secret message';
 let keyTag = 'com.domain.mykey';
@@ -9,20 +9,18 @@ let keyTag = 'com.domain.mykey';
 const generateDemo = async () => {
   console.log('generateDemo');
   const keys = await RSA.generate();
-  console.log('public:', keys.public); // the public key
+  console.log('public:', keys); // the public key
   const encodedMessage = await RSA.encrypt('1234', keys.public);
   console.log('encoded message:', encodedMessage);
-  const message = await RSA.decrypt(encodedMessage, keyTag);
+  const message = await RSA.decrypt(encodedMessage, keys.private);
   console.log('decoded message:', message);
 };
 
 const signDemo = async () => {
   console.log('signDemo');
   const keys = await RSA.generate();
-  const signature = await RSA.sign(secret, keyTag);
+  const signature = await RSA.sign(secret, keys.private);
   console.log('signature', signature);
-  const valid = await RSA.verify(signature, secret, keys.public);
-  console.log('verified', valid);
   try {
     await RSA.verify(signature, 'wrong message', keys.public);
     console.log('NOTE!! Something went wrong, verify should have been failed');
@@ -36,7 +34,7 @@ const signAlgoDemo = async () => {
   const keys = await RSA.generate();
   const signature = await RSA.signWithAlgorithm(
     secret,
-    keyTag,
+    keys.private,
     RSA.SHA256withRSA as any,
   );
   console.log('signature', signature);
@@ -172,6 +170,7 @@ const keychainDemo = async () => {
 };
 
 const runDemos = async () => {
+  console.log('run tests');
   await generateDemo();
   await signDemo();
   await signAlgoDemo();
@@ -180,12 +179,11 @@ const runDemos = async () => {
   await keychainDemo();
 };
 
-runDemos().then();
-
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Demo app</Text>
+      <Button onPress={runDemos} title="Run tests" />
     </SafeAreaView>
   );
 };
