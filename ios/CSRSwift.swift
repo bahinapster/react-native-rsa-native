@@ -37,7 +37,7 @@ public class CertificateSigningRequest : NSObject {
 
     public func build(_ publicKeyBits: Data, privateKey: SecKey, publicKey: SecKey?=nil) -> Data? {
         let certificationRequestInfo = buldCertificationRequestInfo(publicKeyBits)
-        var signature = [UInt8](repeating: 0, count: 256)
+        var signature = [UInt8](repeating: 0, count: 1024)
         var signatureLen: Int = signature.count
 
         var error: Unmanaged<CFError>?
